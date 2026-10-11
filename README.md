@@ -14,7 +14,7 @@ Backtester de strategies de trading sur BTC et ETH en Python : recuperation des 
 - Comparaison systematique avec le buy & hold
 - Graphiques : prix + signaux, equity curve, drawdown, comparaison des strategies
 - Optimisation des parametres avec separation train/test (detection de l'overfitting)
-- Signaux live (`src/live.py`) : position courante de chaque strategie sur les dernieres bougies Binance
+- **Tests unitaires** pour verifier l'integrite du backtest (lookahead bias, frais, metriques)
 
 ## Resultats BTC/USDT (frais 0,1 %, capital initial 10 000 $)
 
@@ -66,3 +66,13 @@ Script : `python src/optimize.py`
 `python src/live.py` recupere les dernieres bougies Binance et affiche la position courante de chaque strategie (SMA 20/50 et RSI 14) pour BTC et ETH. L'option `--loop` rafraichit l'affichage toutes les 5 minutes. Les signaux sont calcules sur la bougie du jour en cours : ils peuvent encore changer a la cloture. Outil d'information uniquement, pas de passage d'ordres.
 
 ## Installation
+
+```bash
+git clone https://github.com/theojoyerclement-crypto/crypto-quant-backtester.git
+cd crypto-quant-backtester
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+python src/optimize.py
+python src/live.py
