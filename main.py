@@ -1,43 +1,49 @@
-"""Point d'entree : backtest de plusieurs strategies sur BTC et ETH, comparaison."""
-
-import os
 import sys
-
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "src"))
-
-import pandas as pd
-
-from backtest import compute_metrics, run_backtest
-from data_loader import load_csv
-from plots import plot_backtest, plot_comparison
-from strategy import rsi_meanreversion, sma_crossover
-
-STRATEGIES = {
-    "SMA 20/50": lambda df: sma_crossover(df, short=20, long=50),
-    "RSI 14 (30/70)": lambda df: rsi_meanreversion(df, period=14, oversold=30, overbought=70),
-}
-
+from src.ml_backtest import backtest_ml_strategy
+from src.data_fetcher import fetch_binance_data
+from src.features import create_features
 
 def main():
-    symbols = ["BTC/USDT", "ETH/USDT"]
+    """
+    Script principal pour lancer les backtests
+    """
+    
+    print("\n" + "="*60)
+    print("CRYPTO QUANT BACKTESTER - ML VERSION")
+    print("="*60 + "\n")
+    
+    # Config
+    symbols = ['BTCUSDT', 'ETHUSDT']
+    timeframe = '1d'
+    days = 365
+    model_type = 'xgboost'
+    
+    print(f"📊 Configuration:")
+    print(f"   Symboles: {symbols}")
+    print(f"   Timeframe: {timeframe}")
+    print(f"   Jours: {days}")
+    print(f"   Modèle: {model_type}\n")
+    
+    # Lancer les backtests
+    results = []
     for symbol in symbols:
-        print(f"\n########## {symbol} ##########")
-        df = load_csv(symbol, "1d")
+        print(f"\n🔄 Processing {symbol}...")
+        result = backtest_ml_strategy(symbol, timeframe, days, model_type)
+        if result:
+            results.append(result)
+    
+    # Résumé final
+    print("\n" + "="*60)
+    print("📊 RÉSUMÉ FINAL")
+    print("="*60)
+    
+    for r in results:
+        print(f"\n{r['symbol']}:")
+        print(f"  Return Stratégie: {r['performance']['return_strategy']:.2f}%")
+        print(f"  Return Buy&Hold:  {r['performance']['return_bh']:.2f}%")
+        print(f"  Win Rate:         {r['performance']['win_rate']:.2f}%")
+        print(f"  Sharpe Ratio:     {r['performance']['sharpe']:.4f}")
+        print(f"  Max Drawdown:     {r['performance']['max_drawdown']:.2f}%")
 
-        results = {}
-        rows = {}
-        for name, strategy in STRATEGIES.items():
-            bt = run_backtest(strategy(df), fee=0.001)
-            results[name] = bt
-            rows[name] = compute_metrics(bt)
-            slug = name.split(" ")[0] + "_" + symbol.replace("/", "_")
-            plot_backtest(bt, symbol, name, filename=f"{slug}_backtest.png")
-
-        table = pd.DataFrame(rows)
-        print(table.to_string())
-        path = plot_comparison(results, symbol)
-        print(f"Comparaison sauvegardee : {path}")
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

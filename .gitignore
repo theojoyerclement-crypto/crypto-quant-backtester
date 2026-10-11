@@ -1,5 +1,31 @@
+# Environments
 venv/
+env/
+ENV/
+.venv
+
+# Python
 __pycache__/
-*.pyc
-data/
-.env
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project specific
+models/BTCUSDT_xgboost_model.pkl
+models/ETHUSDT_xgboost_model.pkl
+results/*.png
+.DS_Store
+
+# Logs
+*.log
