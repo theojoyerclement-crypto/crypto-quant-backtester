@@ -1,5 +1,9 @@
 # Crypto Quant Backtester
 
+![Tests](https://github.com/theojoyerclement-crypto/crypto-quant-backtester/workflows/Tests/badge.svg)
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 Backtester de strategies de trading sur BTC et ETH en Python : recuperation des donnees, generation de signaux, simulation avec frais, metriques de performance et graphiques. Deux strategies sont comparees entre elles et au buy & hold, et les parametres sont valides hors echantillon.
 
 ![Comparaison BTC](results/BTC_USDT_comparison.png)
