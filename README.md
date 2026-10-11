@@ -1,6 +1,6 @@
 # Crypto Quant Backtester
 
-Backtester de strategies de trading sur BTC et ETH en Python : recuperation des donnees, generation de signaux, simulation avec frais, metriques de performance et graphiques. Deux strategies sont comparees entre elles et au buy & hold.
+Backtester de strategies de trading sur BTC et ETH en Python : recuperation des donnees, generation de signaux, simulation avec frais, metriques de performance et graphiques. Deux strategies sont comparees entre elles et au buy & hold, et les parametres sont valides hors echantillon.
 
 ![Comparaison BTC](results/BTC_USDT_comparison.png)
 
@@ -13,6 +13,7 @@ Backtester de strategies de trading sur BTC et ETH en Python : recuperation des 
 - Metriques : rendement total, CAGR, Sharpe ratio, max drawdown, nombre de trades, win rate, temps en position
 - Comparaison systematique avec le buy & hold
 - Graphiques : prix + signaux, equity curve, drawdown, comparaison des strategies
+- Optimisation des parametres avec separation train/test (detection de l'overfitting)
 
 ## Resultats BTC/USDT (frais 0,1 %, capital initial 10 000 $)
 
@@ -44,7 +45,20 @@ Backtester de strategies de trading sur BTC et ETH en Python : recuperation des 
 - La SMA domine le RSI sur BTC comme sur ETH (Sharpe 0,93 contre 0,59 et 0,53). Sur des actifs en forte tendance, suivre la tendance fonctionne mieux que parier sur un retour a la moyenne.
 - Le RSI a le meilleur win rate mais le pire rendement : il gagne souvent de petits gains, rate l'essentiel des hausses (40 % du temps en position seulement) et encaisse de grosses pertes quand une chute se poursuit apres son achat. Un win rate eleve ne fait pas une bonne strategie.
 - Le RSI ne genere que 9 a 11 trades sur 6 ans : l'echantillon est trop faible pour conclure de facon robuste.
-- Les parametres (20/50, 14/30/70) sont des valeurs classiques, non optimisees. Il n'y a pas encore de validation hors echantillon.
+- Les parametres par defaut (20/50, 14/30/70) sont des valeurs classiques, non optimisees. La section suivante teste ce qui se passe quand on les optimise.
+
+## Validation hors echantillon (train/test)
+
+Pour verifier que la strategie ne fait pas de l'overfitting, les parametres SMA sont optimises sur 2020-2023 (train, grille de 10 a 50 pour la SMA courte et 50 a 200 pour la longue, critere : Sharpe), puis figes et evalues sur 2024-2026 (test).
+
+| | BTC train | BTC test | ETH train | ETH test |
+|---|---|---|---|---|
+| Parametres | SMA 10/100 | SMA 10/100 | SMA 10/200 | SMA 10/200 |
+| Sharpe | 1,37 | 0,65 | 1,35 | 0,38 |
+
+Sur le test, les parametres par defaut SMA 20/50 font mieux que les parametres optimises (Sharpe 0,71 contre 0,65 sur BTC, 0,72 contre 0,38 sur ETH). Conclusion : l'optimisation sur le passe a surtout ajuste du bruit. Limites : le test ne contient que 5 a 13 trades, et la periode train inclut le bull run 2020-2021, donc une partie de la degradation vient aussi du changement de regime de marche.
+
+Script : `python src/optimize.py`
 
 ## Installation
 
@@ -55,6 +69,7 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 python main.py
+python src/optimize.py
 ```
 
 ## Structure
@@ -67,12 +82,12 @@ crypto-quant-backtester/
 |   |-- data_loader.py
 |   |-- strategy.py
 |   |-- backtest.py
-|   `-- plots.py
+|   |-- plots.py
+|   `-- optimize.py
 `-- results/
 ```
 
 ## Pistes d'amelioration
 
-- Separation train/test pour valider les parametres hors echantillon
-- Optimisation des parametres sans overfitting (walk-forward)
+- Walk-forward (reoptimisation glissante) pour tester la robustesse sur plusieurs fenetres
 - Version live avec signaux en temps reel
