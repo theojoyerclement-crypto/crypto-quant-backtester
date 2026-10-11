@@ -70,7 +70,7 @@ La stratégie ne bat pas le buy \& hold en rendement brut sur la période, et su
 
 ```cmd
 
-git clone https://github.com/TON\_PSEUDO/crypto-quant-backtester.git
+git clone https://github.com/theojoyerclement-crypto/crypto-quant-backtester.git
 
 cd crypto-quant-backtester
 
