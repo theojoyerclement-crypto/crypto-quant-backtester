@@ -1,144 +1,62 @@
-\# Crypto Quant Backtester
+# Crypto Quant Backtester
 
+Backtester de strategies de trading sur BTC et ETH en Python : recuperation des donnees, generation de signaux, simulation avec frais, metriques de performance et graphiques.
 
+![Backtest BTC](results/BTC_USDT_backtest.png)
 
-Backtester de stratégies de trading sur BTC et ETH en Python : récupération des données, génération de signaux, simulation avec frais, métriques de performance et graphiques.
+## Fonctionnalites
 
+- Donnees historiques journalieres via l'API Binance (`ccxt`), du 01/01/2020 a aujourd'hui
+- Strategie : croisement de moyennes mobiles (SMA 20 / SMA 50)
+- Moteur de backtest **sans lookahead bias** (signal decale d'une periode) et **avec frais de trading** (0,1 % par changement de position)
+- Metriques : rendement total, CAGR, Sharpe ratio, max drawdown, nombre de trades, win rate, temps en position
+- Comparaison systematique avec le buy & hold
+- Graphiques : prix + signaux, equity curve, drawdown
 
+## Resultats (SMA 20/50, frais 0,1 %, capital initial 10 000 $)
 
-!\[Backtest BTC](results/BTC\_USDT\_backtest.png)
-
-
-
-\## Fonctionnalités
-
-
-
-\- Données historiques journalières via l'API Binance (`ccxt`), du 01/01/2020 à aujourd'hui
-
-\- Stratégie : croisement de moyennes mobiles (SMA 20 / SMA 50)
-
-\- Moteur de backtest \*\*sans lookahead bias\*\* (signal décalé d'une période) et \*\*avec frais de trading\*\* (0,1 % par changement de position)
-
-\- Métriques : rendement total, CAGR, Sharpe ratio, max drawdown, nombre de trades, win rate, temps en position
-
-\- Comparaison systématique avec le buy \& hold
-
-\- Graphiques : prix + signaux, equity curve, drawdown
-
-
-
-\## Résultats (SMA 20/50, frais 0,1 %, capital initial 10 000 $)
-
-
-
-| Métrique | BTC/USDT | ETH/USDT |
-
+| Metrique | BTC/USDT | ETH/USDT |
 |---|---|---|
-
-| Rendement stratégie | 679,4 % | 1 168,8 % |
-
-| Rendement buy \& hold | 1 053,4 % | 1 813,3 % |
-
+| Rendement strategie | 679,4 % | 1 168,8 % |
+| Rendement buy & hold | 1 053,4 % | 1 813,3 % |
 | CAGR | 35,4 % | 45,4 % |
-
 | Sharpe ratio | 0,93 | 0,93 |
-
 | Max drawdown | -58,7 % | -60,7 % |
-
 | Nombre de trades | 28 | 24 |
-
 | Win rate | 42,9 % | 54,2 % |
+| Temps en position | 54,3 % | 52,6 % |
 
+## Lecture des resultats
 
+La strategie SMA 20/50 reste **en dessous du buy & hold** en rendement brut, avec un drawdown comparable. Ce resultat est volontairement conserve : un backtest honnete montre aussi les limites d'une strategie simple. Le Sharpe ratio de 0,93 est correct mais pas exceptionnel.
 
-\## Analyse
+## Installation
 
-
-
-La stratégie ne bat pas le buy \& hold en rendement brut sur la période, et subit un drawdown important (\~-59 %), principalement en 2022 : les moyennes mobiles lentes réagissent tard aux retournements. C'est le compromis classique du trend-following : peu de trades, win rate modéré, gains concentrés sur les grandes tendances.
-
-
-
-\*\*Limites\*\* : pas de slippage, pas de gestion du risque (stop-loss, taille de position), paramètres non optimisés, résultats passés non prédictifs.
-
-
-
-\## Installation
-
-
-
-```cmd
-
+```
 git clone https://github.com/theojoyerclement-crypto/crypto-quant-backtester.git
-
 cd crypto-quant-backtester
-
 python -m venv venv
-
-venv\\Scripts\\activate
-
+venv\Scripts\activate
 pip install -r requirements.txt
-
+python main.py
 ```
 
-
-
-\## Utilisation
-
-
-
-```cmd
-
-python src\\data\_loader.py   :: télécharge les données
-
-python main.py              :: lance les backtests et génère les graphiques
+## Structure
 
 ```
-
-
-
-Les graphiques sont sauvegardés dans `results/`.
-
-
-
-\## Structure
-
-
-
+crypto-quant-backtester/
+|-- main.py
+|-- requirements.txt
+|-- src/
+|   |-- data_loader.py
+|   |-- strategy.py
+|   |-- backtest.py
+|   `-- plots.py
+`-- results/
 ```
 
-src/data\_loader.py   récupération et chargement des données
+## Pistes d'amelioration
 
-src/strategy.py      génération des signaux
-
-src/backtest.py      moteur de backtest et métriques
-
-src/plots.py         graphiques
-
-main.py              point d'entrée
-
-```
-
-
-
-\## Pistes d'amélioration
-
-
-
-\- Stratégies RSI et mean-reversion
-
-\- Optimisation des paramètres avec validation out-of-sample
-
-\- Stop-loss et dimensionnement de position
-
-\- Mode live avec signaux en temps réel
-
-
-
-\## Stack
-
-
-
-Python, pandas, numpy, matplotlib, ccxt
-
+- Strategie RSI (mean-reversion)
+- Optimisation des parametres avec separation train/test
+- Version live avec signaux en temps reel
