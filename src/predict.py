@@ -45,17 +45,7 @@ def predict_future(symbol, model_type='xgboost', n_future=5, lookback_days=30):
 
         # 2. Créer les features
         print("⚙️ Création des features...")
-        print(f"DEBUG: df.shape AVANT create_features = {df.shape}")
-        print(f"DEBUG: df.index = {df.index}\n")
-        
         df = create_features(df)
-        
-        print(f"DEBUG: df.shape APRÈS create_features = {df.shape}")
-        if len(df) > 0:
-            print(f"DEBUG: df.index = {df.index}")
-            print(f"DEBUG: df.columns = {df.columns.tolist()}\n")
-        else:
-            print("DEBUG: ⚠️ DataFrame vide après create_features !\n")
         
         feature_columns = get_feature_columns()
         print(f"✅ {len(feature_columns)} features créées\n")
