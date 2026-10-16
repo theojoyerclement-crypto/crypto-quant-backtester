@@ -1,3 +1,4 @@
+Note : ce dépôt est archivé. C'est mon premier backtester. Il affichait plus de 800 % de rendement, ce qui était trop beau pour être vrai. En cherchant pourquoi, j'ai découvert une fuite de données et du surapprentissage. Cette prise de conscience m'a conduit à construire AlphaForge, qui corrige ces erreurs avec des tests anti-look-ahead et des coûts réalistes.https://github.com/theojoyerclement-crypto/alphaforge
 # Crypto Quant Backtester
 
 > Backtesting reproductible de stratégies crypto sur **BTC/USDT** et **ETH/USDT**, combinant indicateurs techniques, XGBoost et métriques de risque.
